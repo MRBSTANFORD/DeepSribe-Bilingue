@@ -1,5 +1,5 @@
 {
-  "name": "DeepScribe — Turn Voice Notes into Strategic Assets Bilingue",
+  "name": "DeepScribe — Turn Voice Notes into Strategic Assets",
   "description": "Professional audio transcription, document generation with web enrichment, and real-time conversational AI.",
   "requestFramePermissions": [
     "microphone"

@@ -3,6 +3,7 @@ import React from 'react';
 import { Shield, AlertTriangle, Lock, Scale, Info, Mail } from 'lucide-react';
 import { AppLanguage } from '../types';
 import { translations } from '../translations';
+import { BrandedText } from '../App';
 
 interface Props {
   language?: AppLanguage;
@@ -34,11 +35,11 @@ export const LegalPanel: React.FC<Props> = ({ language = AppLanguage.EN }) => {
             <Info className="w-6 h-6" />
             <h2 className="text-xl font-bold">{t.ownershipTitle}</h2>
           </div>
-          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify">
+          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify font-medium">
             <p>
-              <strong>DeepScribe</strong> {t.ownershipDesc1} (<a href="https://www.razaofinal.com" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.razaofinal.com</a>).
+              <BrandedText text="DeepScribe" /> {t.ownershipDesc1} (<a href="https://www.razaofinal.com" target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">www.razaofinal.com</a>).
             </p>
-            <p>{t.ownershipDesc2}</p>
+            <p><BrandedText text={t.ownershipDesc2} /></p>
             <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-lg flex items-center gap-3">
                <Mail className="w-5 h-5 text-indigo-600" />
                <span>
@@ -54,10 +55,10 @@ export const LegalPanel: React.FC<Props> = ({ language = AppLanguage.EN }) => {
             <AlertTriangle className="w-6 h-6" />
             <h2 className="text-xl font-bold">{t.disclaimerTitle}</h2>
           </div>
-          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify">
+          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify font-medium">
             <p className="font-bold">{t.disclaimerBold}</p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>{t.disclaimerPoint1}</li>
+              <li><BrandedText text={t.disclaimerPoint1} /></li>
               <li>{t.disclaimerPoint2}</li>
             </ul>
           </div>
@@ -69,8 +70,8 @@ export const LegalPanel: React.FC<Props> = ({ language = AppLanguage.EN }) => {
             <Lock className="w-6 h-6" />
             <h2 className="text-xl font-bold">{t.privacyTitle}</h2>
           </div>
-          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify">
-            <p>{t.privacyDesc}</p>
+          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify font-medium">
+            <p><BrandedText text={t.privacyDesc} /></p>
             <ul className="list-disc pl-5 space-y-2">
               <li>{t.privacyPoint1}</li>
               <li>{t.privacyPoint2}</li>
@@ -84,8 +85,8 @@ export const LegalPanel: React.FC<Props> = ({ language = AppLanguage.EN }) => {
             <Scale className="w-6 h-6" />
             <h2 className="text-xl font-bold">{t.liabilityTitle}</h2>
           </div>
-          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify">
-            <p>{t.liabilityDesc1}</p>
+          <div className="text-sm text-gray-700 space-y-4 leading-relaxed text-justify font-medium">
+            <p><BrandedText text={t.liabilityDesc1} /></p>
             <p><strong>{t.liabilityDesc2}</strong></p>
             <p>{t.liabilityDesc3}</p>
           </div>

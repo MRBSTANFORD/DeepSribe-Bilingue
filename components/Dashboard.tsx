@@ -3,6 +3,7 @@ import React from 'react';
 import { Upload, Mic, FileText, BrainCircuit, Sparkles, ArrowRight, Clock, ChevronRight, BookOpen, Lightbulb } from 'lucide-react';
 import { DocumentData, AppView, AppSettings, AppLanguage } from '../types';
 import { translations } from '../translations';
+import { BrandedText } from '../App';
 
 interface Props {
   documents: DocumentData[];
@@ -40,10 +41,10 @@ export const Dashboard: React.FC<Props> = ({ documents, onNavigate, onOpenDoc, s
       {/* Hero Section */}
       <div className="mb-12 text-center py-8">
         <h1 className="text-4xl font-serif font-bold text-gray-900 mb-4">
-          {d.title} <span className="text-doc-accent">{d.subtitle}</span>
+          {d.title} <span className="text-blue-600">{d.subtitle}</span>
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          {d.desc}
+          <BrandedText text={d.desc} />
         </p>
       </div>
 
@@ -63,7 +64,14 @@ export const Dashboard: React.FC<Props> = ({ documents, onNavigate, onOpenDoc, s
 
       {/* Science Teaser Banner */}
       <div 
-        onClick={() => onNavigate(AppView.HELP)}
+        onClick={() => {
+           onNavigate(AppView.HELP);
+           // After a short delay to ensure component render, scroll to science section
+           setTimeout(() => {
+             const el = document.getElementById('science-methodology');
+             if (el) el.scrollIntoView({ behavior: 'smooth' });
+           }, 100);
+        }}
         className={`mb-16 rounded-xl p-8 shadow-xl cursor-pointer group relative overflow-hidden border ${style.container}`}
       >
         <div className="absolute top-0 right-0 p-8 opacity-20 transform group-hover:scale-110 transition-transform duration-700 ease-out">
@@ -79,7 +87,7 @@ export const Dashboard: React.FC<Props> = ({ documents, onNavigate, onOpenDoc, s
                  {d.scienceBanner.title}
               </h3>
               <p className={`max-w-2xl leading-relaxed text-sm md:text-base border-l-2 pl-4 ${style.descriptionClass}`}>
-                 {d.scienceBanner.desc}
+                 <BrandedText text={d.scienceBanner.desc} deepColorClass={style.contentClass === 'text-white' ? 'text-white' : 'text-gray-900'} />
               </p>
            </div>
            <button className={`whitespace-nowrap px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 backdrop-blur-sm shadow-sm group-hover:shadow-lg ${style.button}`}>
@@ -102,7 +110,7 @@ export const Dashboard: React.FC<Props> = ({ documents, onNavigate, onOpenDoc, s
         <button onClick={() => onNavigate(AppView.LIVE)} className="group relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white p-8 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all text-left">
            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><Mic className="w-32 h-32 text-indigo-600" /></div>
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4 text-indigo-600"><Mic className="w-6 h-6" /></div>
+            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4 text-indigo-100"><Mic className="w-6 h-6" /></div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">{d.actions.live.title}</h3>
             <p className="text-gray-500 mb-6">{d.actions.live.desc}</p>
             <span className="inline-flex items-center font-bold text-indigo-600 group-hover:translate-x-1 transition-transform">{d.actions.live.cta} <ArrowRight className="w-4 h-4 ml-2" /></span>

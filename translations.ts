@@ -11,6 +11,8 @@ export const translations = {
       cta: "Select Your API Key",
       billingNote: "Note: You must select an API key from a project with billing enabled (even if you stay within the free tier).",
       billingLink: "Learn more about Gemini API billing",
+      freeTierTitle: "The Power of Free",
+      freeTierInfo: "The Google Gemini Free Tier allows for approx. 50+ hours of audio transcription per month and up to 1,500 daily interactions. For standard professional use, this tool is effectively free forever.",
       benefits: [
         "100% Private: Data stays in your browser.",
         "Zero Cost: Use your own project's free tier.",
@@ -209,6 +211,24 @@ export const translations = {
           { title: "Discuss", text: "Use the Assistant to challenge assumptions or extract specific data points." }
         ]
       },
+      science: {
+        title: "The Methodology of DeepScribe",
+        subtitle: "The Science of Thinking Better.",
+        intro: "DeepScribe isn't just a transcription tool; it's a cognitive architecture designed to maximize your strategic output by leveraging the way the human brain actually processes ideas.",
+        p1: {
+          title: "1. The Movement Spark (Stanford Research)",
+          text: "A landmark study by Stanford University (Oppezzo & Schwartz, 2014) proved that walking increases creative output by an average of 60%. Physical movement triggers a 'soft fascination' state that allows the subconscious mind to bridge neural gaps that remain closed while sitting at a desk."
+        },
+        p2: {
+          title: "2. Cognitive Offloading",
+          text: "The human 'Working Memory' is limited. By capturing thoughts instantly via voice, you engage in 'Cognitive Offloading.' This clears your mental RAM, allowing your prefrontal cortex to focus on synthesizing new patterns rather than simply trying to remember the old ones."
+        },
+        p3: {
+          title: "3. The Incubation Effect",
+          text: "Breakthroughs often happen when we stop actively thinking about a problem. By recording your 'chaos' and letting DeepScribe structure it later, you leverage the Incubation Effect—allowing your mind to work on the solution in the background while the system handles the heavy lifting of organization."
+        },
+        conclusion: "DeepScribe turns your messy, unfiltered insights into professional assets, ensuring your most valuable thoughts are never lost to the 'voice note void'."
+      },
       strategic: {
         title: "Strategic Intelligence",
         enrichment: { title: "Web Enrichment Layers", text: "Every topic is cross-referenced with the live web. Sources are sorted into Recent and Historic." },
@@ -224,6 +244,10 @@ export const translations = {
         selection: { title: "Smart Selection Menu", text: "Highlight text to instantly Analyze, Explain, or Summarize." },
         dictation: { title: "Voice Waves", text: "Click the Mic icon once for continuous smart listening." }
       },
+      costs: {
+        title: "Costs, Limits & Privacy",
+        text: "DeepScribe runs on the Google Gemini Free Tier. Currently, this includes: 15 requests/min, 1,500 requests/day, and 1 million tokens/min (approx. 5 hours of audio). This is more than enough for intensive professional use without any costs."
+      },
       moreHelp: "Need more help?",
       moreHelpDesc: "DeepScribe is maintained by RF Strategy to foster better thinking.",
       btnFeedback: "Feedback & Support"
@@ -238,6 +262,8 @@ export const translations = {
       cta: "Selecionar Chave API",
       billingNote: "Nota: Deve selecionar uma chave API de um projeto com faturação ativa (mesmo que permaneça no escalão gratuito).",
       billingLink: "Saiba mais sobre a faturação da API Gemini",
+      freeTierTitle: "O Poder do Gratuito",
+      freeTierInfo: "O Escalão Gratuito do Google Gemini permite aprox. 50+ horas de transcrição de áudio por mês e até 1.500 interações diárias. Para uso profissional comum, esta ferramenta é efetivamente gratuita para sempre.",
       benefits: [
         "100% Privado: Os dados ficam no seu navegador.",
         "Custo Zero: Use o escalão gratuito do seu projeto.",
@@ -436,6 +462,24 @@ export const translations = {
           { title: "Discutir", text: "Use o Assistente para desafiar ideias ou extrair dados específicos." }
         ]
       },
+      science: {
+        title: "A Metodologia DeepScribe",
+        subtitle: "A Ciência de Pensar Melhor.",
+        intro: "O DeepScribe não é apenas uma ferramenta de transcrição; é uma arquitetura cognitiva concebida para maximizar a sua produção estratégica, aproveitando a forma como o cérebro humano realmente processa as ideias.",
+        p1: {
+          title: "1. A Faísca do Movimento (Estudo de Stanford)",
+          text: "Um estudo marcante da Universidade de Stanford (Oppezzo & Schwartz, 2014) provou que caminhar aumenta a produção criativa numa média de 60%. O movimento físico desencadeia um estado de 'fascinação suave' que permite à mente subconsciente preencher lacunas neurais que permanecem fechadas enquanto se está sentado a uma secretária."
+        },
+        p2: {
+          title: "2. Descarga Cognitiva",
+          text: "A 'Memória de Trabalho' humana é limitada. Ao capturar pensamentos instantaneamente via voz, está a realizar uma 'Descarga Cognitiva'. Isto limpa a sua RAM mental, permitindo que o seu córtex pré-frontal se foque na síntese de novos padrões, em vez de simplesmente tentar recordar os antigos."
+        },
+        p3: {
+          title: "3. O Efeito de Incubação",
+          text: "Os avanços acontecem frequentemente quando paramos de pensar ativamente num problema. Ao gravar o seu 'caos' e deixar o DeepScribe estruturá-lo mais tarde, aproveita o Efeito de Incubação — permitindo que a sua mente trabalhe na solução em segundo plano enquanto o sistema trata do trabalho pesado da organização."
+        },
+        conclusion: "O DeepScribe transforma as suas ideias desorganizadas em ativos profissionais, garantindo que os seus pensamentos mais valiosos nunca se percam no 'vazio das notas de voz'."
+      },
       strategic: {
         title: "Inteligência Estratégica",
         enrichment: { title: "Camadas de Enriquecimento Web", text: "Cada tópico é cruzado com a web em tempo real. As fontes são divididas em Recentes e Históricas." },
@@ -450,6 +494,10 @@ export const translations = {
         title: "Ferramentas Avançadas",
         selection: { title: "Menu de Seleção Inteligente", text: "Sublinhe texto para Analisar, Explicar ou Resumir instantaneamente." },
         dictation: { title: "Ondas de Voz", text: "Clique no ícone do microfone para ditado contínuo e inteligente." }
+      },
+      costs: {
+        title: "Custos, Limites e Privacidade",
+        text: "O DeepScribe funciona no Escalão Gratuito do Google Gemini. Atualmente, isto inclui: 15 pedidos/min, 1.500 pedidos/dia e 1 milhão de tokens/min (aprox. 5 horas de áudio). Isto é mais do que suficiente para uma utilização profissional intensiva sem quaisquer custos."
       },
       moreHelp: "Precisa de mais ajuda?",
       moreHelpDesc: "O DeepScribe é mantido pela RF Strategy para promover um melhor pensamento.",

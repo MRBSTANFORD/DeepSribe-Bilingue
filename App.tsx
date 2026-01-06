@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mic2, FileText, Settings as SettingsIcon, Menu, FolderOpen, HelpCircle, AlertTriangle, X, Shield, Home, Share2, BrainCircuit, Brain, Atom, Component, AudioWaveform, Eye, Sparkles, Key, ExternalLink, CheckCircle2, ShieldAlert, Lock, Unlock, Info, ChevronRight, Globe, AlertCircle } from 'lucide-react';
+import { Mic2, FileText, Settings as SettingsIcon, Menu, FolderOpen, HelpCircle, AlertTriangle, X, Shield, Home, Share2, BrainCircuit, Brain, Atom, Component, AudioWaveform, Eye, Sparkles, Key, ExternalLink, CheckCircle2, ShieldAlert, Lock, Unlock, Info, ChevronRight, Globe, AlertCircle, Sparkle } from 'lucide-react';
 import { AppView, AppSettings, DocumentData, AppLanguage } from './types';
 import { DocGenerator } from './components/DocGenerator';
 import { LiveSession } from './components/LiveSession';
@@ -51,6 +51,34 @@ const LanguageSwitcher = ({ current, onSelect }: { current: AppLanguage, onSelec
   </div>
 );
 
+/**
+ * BrandedText: Replaces any occurrence of "DeepScribe" in a string 
+ * with a styled version where "Deep" is usually black (or custom) and "Scribe" is blue.
+ */
+export const BrandedText = ({ text, className = "", deepColorClass = "text-gray-900" }: { text: string, className?: string, deepColorClass?: string }) => {
+  if (!text) return null;
+  const parts = text.split(/(DeepScribe)/g);
+  return (
+    <span className={className}>
+      {parts.map((part, i) => (
+        part === "DeepScribe" ? (
+          <span key={i} className="whitespace-nowrap inline-flex">
+            <span className={deepColorClass}>Deep</span>
+            <span className="text-blue-600">Scribe</span>
+          </span>
+        ) : part
+      ))}
+    </span>
+  );
+};
+
+const BrandLogo = ({ className = "" }: { className?: string }) => (
+  <h1 className={`font-serif font-bold tracking-tighter ${className}`}>
+    <span className="text-gray-900">Deep</span>
+    <span className="text-blue-600">Scribe</span>
+  </h1>
+);
+
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>(AppView.DASHBOARD);
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -71,6 +99,7 @@ const App: React.FC = () => {
   const language = settings.appLanguage || AppLanguage.EN;
   const t = translations[language];
 
+  // Initialize data and check for AI Studio Bridge
   useEffect(() => {
     setDocuments(getDocuments());
     initGA(settings.googleAnalyticsId || GLOBAL_ANALYTICS_ID);
@@ -84,6 +113,7 @@ const App: React.FC = () => {
     checkBridge();
     // Re-check periodically in case injection is delayed
     const timer = setInterval(checkBridge, 1000);
+    // Fix: line 115 - changing clearInterval(interval) to clearInterval(timer)
     return () => clearInterval(timer);
   }, [settings.googleAnalyticsId]);
 
@@ -154,15 +184,17 @@ const App: React.FC = () => {
              <div className="bg-slate-900 p-8 text-white relative">
                 <button onClick={() => setShowKeyModal(false)} className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors"><X className="w-5 h-5" /></button>
                 <div className="flex justify-center mb-6"><div className="p-3 bg-white/10 rounded-2xl"><Key className="w-8 h-8 text-indigo-400" /></div></div>
-                <h2 className="text-2xl font-serif font-bold text-center mb-2 tracking-tight">{t.onboarding.title}</h2>
+                <h2 className="text-2xl font-serif font-bold text-center mb-2 tracking-tight">
+                  <BrandedText text={t.onboarding.title} deepColorClass="text-white" />
+                </h2>
                 <p className="text-center text-slate-400 text-[10px] uppercase tracking-widest font-black opacity-80">{t.onboarding.subtitle}</p>
              </div>
              
              <div className="p-10 space-y-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
                 <p className="text-sm text-gray-600 leading-relaxed text-center font-medium">
-                  {language === AppLanguage.PT 
+                  <BrandedText text={language === AppLanguage.PT 
                     ? "Para proteger a sua privacidade e evitar custos ao programador, o DeepScribe utiliza a sua própria chave API do Google Gemini."
-                    : "To protect your privacy and prevent developer costs, DeepScribe uses your own Google Gemini API key."}
+                    : "To protect your privacy and prevent developer costs, DeepScribe uses your own Google Gemini API key."} />
                 </p>
                 
                 <div className="space-y-4">
@@ -179,9 +211,9 @@ const App: React.FC = () => {
                         <div>
                            <div className="text-xs font-black text-amber-900 uppercase tracking-widest mb-1">{language === AppLanguage.PT ? "Ligação Direta Não Disponível" : "Direct Link Not Available"}</div>
                            <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
-                              {language === AppLanguage.PT 
+                              <BrandedText text={language === AppLanguage.PT 
                                 ? "Está a aceder ao DeepScribe fora do AI Studio. Por favor, utilize o formulário abaixo para inserir a sua chave manualmente." 
-                                : "You are accessing DeepScribe outside of AI Studio. Please use the form below to enter your key manually."}
+                                : "You are accessing DeepScribe outside of AI Studio. Please use the form below to enter your key manually."} />
                            </p>
                         </div>
                      </div>
@@ -200,6 +232,14 @@ const App: React.FC = () => {
                       </div>
                       <button type="submit" className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-black transition-all shadow-lg active:scale-[0.98] uppercase tracking-widest text-xs">Apply Key</button>
                    </form>
+                </div>
+
+                {/* ZERO COST HERO BOX */}
+                <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
+                   <h4 className="text-[11px] font-black text-emerald-800 uppercase tracking-widest mb-3 flex items-center gap-2"><Sparkle className="w-4 h-4 text-emerald-600"/> {t.onboarding.freeTierTitle}</h4>
+                   <p className="text-[12px] text-emerald-900 leading-relaxed font-medium">
+                      {t.onboarding.freeTierInfo}
+                   </p>
                 </div>
 
                 <div className="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
@@ -228,7 +268,7 @@ const App: React.FC = () => {
       <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:static md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-8 flex items-center gap-3">
            <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-100"><BrainCircuit className="w-6 h-6" /></div>
-           <h1 className="text-xl font-serif font-black text-gray-900 tracking-tighter uppercase">DEEPSCRIBE</h1>
+           <BrandLogo className="text-xl" />
         </div>
 
         <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
@@ -244,7 +284,10 @@ const App: React.FC = () => {
 
         <div className="p-6 border-t border-gray-50 space-y-4">
            <LanguageSwitcher current={language} onSelect={(l) => handleUpdateSettings({ ...settings, appLanguage: l })} />
-           <div className="text-[9px] font-black text-gray-300 uppercase tracking-widest text-center">v2.1.2 Environment Secure</div>
+           <div className="text-[9px] font-black tracking-widest text-center flex items-center justify-center gap-1 uppercase">
+              <BrandedText text="DeepScribe" />
+              <span className="text-gray-300 ml-1">v2.1.2 Environment Secure</span>
+           </div>
         </div>
       </aside>
 
@@ -255,7 +298,7 @@ const App: React.FC = () => {
           <button onClick={() => setIsSidebarOpen(true)} className="p-2 hover:bg-gray-100 rounded-lg"><Menu className="w-6 h-6 text-gray-600" /></button>
           <div className="flex items-center gap-2">
              <BrainCircuit className="w-5 h-5 text-indigo-600" />
-             <span className="font-serif font-black text-lg">DEEPSCRIBE</span>
+             <BrandLogo className="text-lg" />
           </div>
           <LanguageSwitcher current={language} onSelect={(l) => handleUpdateSettings({ ...settings, appLanguage: l })} />
         </header>

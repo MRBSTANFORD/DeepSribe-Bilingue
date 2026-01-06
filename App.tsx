@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mic2, FileText, Settings as SettingsIcon, Menu, FolderOpen, HelpCircle, AlertTriangle, X, Shield, Home, Share2, BrainCircuit, Brain, Atom, Component, AudioWaveform, Eye, Sparkles, Key, ExternalLink, CheckCircle2, ShieldAlert, Lock, Unlock, Info, ChevronRight, Globe } from 'lucide-react';
+import { Mic2, FileText, Settings as SettingsIcon, Menu, FolderOpen, HelpCircle, AlertTriangle, X, Shield, Home, Share2, BrainCircuit, Brain, Atom, Component, AudioWaveform, Eye, Sparkles, Key, ExternalLink, CheckCircle2, ShieldAlert, Lock, Unlock, Info, ChevronRight, Globe, AlertCircle } from 'lucide-react';
 import { AppView, AppSettings, DocumentData, AppLanguage } from './types';
 import { DocGenerator } from './components/DocGenerator';
 import { LiveSession } from './components/LiveSession';
@@ -66,6 +66,7 @@ const App: React.FC = () => {
   const [pendingView, setPendingView] = useState<AppView | null>(null);
   const [manualKey, setManualKey] = useState("");
   const [hasUserKey, setHasUserKey] = useState(() => !!localStorage.getItem(STORAGE_KEY_AUTH));
+  const [isBridgeAvailable, setIsBridgeAvailable] = useState(false);
 
   const language = settings.appLanguage || AppLanguage.EN;
   const t = translations[language];
@@ -73,6 +74,17 @@ const App: React.FC = () => {
   useEffect(() => {
     setDocuments(getDocuments());
     initGA(settings.googleAnalyticsId || GLOBAL_ANALYTICS_ID);
+    
+    // Check if we are inside AI Studio or on a standard URL
+    const checkBridge = () => {
+      const available = window.aistudio && typeof window.aistudio.openSelectKey === 'function';
+      setIsBridgeAvailable(!!available);
+    };
+    
+    checkBridge();
+    // Re-check periodically in case injection is delayed
+    const timer = setInterval(checkBridge, 1000);
+    return () => clearInterval(timer);
   }, [settings.googleAnalyticsId]);
 
   const handleUpdateSettings = (newSettings: AppSettings) => {
@@ -83,8 +95,6 @@ const App: React.FC = () => {
 
   const navigateTo = (newView: AppView) => {
     const restrictedViews = [AppView.GENERATOR, AppView.LIVE, AppView.MARKETING];
-    
-    // Check if the user has a key stored or if bridge is potentially available
     const userStoredKey = localStorage.getItem(STORAGE_KEY_AUTH);
 
     if (restrictedViews.includes(newView) && (!userStoredKey || userStoredKey.length < 10)) {
@@ -111,9 +121,8 @@ const App: React.FC = () => {
   };
 
   const handleBridgeSelect = async () => {
-    if (window.aistudio && typeof window.aistudio.openSelectKey === 'function') {
+    if (isBridgeAvailable) {
       await window.aistudio.openSelectKey();
-      // Assume success as per racing guidelines
       setHasUserKey(true);
       setShowKeyModal(false);
       if (pendingView) setView(pendingView);
@@ -143,52 +152,70 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[40px] max-w-xl w-full shadow-2xl overflow-hidden border border-gray-100 animate-in zoom-in duration-300">
              <div className="bg-slate-900 p-8 text-white relative">
-                <button onClick={() => setShowKeyModal(false)} className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full"><X className="w-5 h-5" /></button>
+                <button onClick={() => setShowKeyModal(false)} className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors"><X className="w-5 h-5" /></button>
                 <div className="flex justify-center mb-6"><div className="p-3 bg-white/10 rounded-2xl"><Key className="w-8 h-8 text-indigo-400" /></div></div>
-                <h2 className="text-2xl font-serif font-bold text-center mb-2">{t.onboarding.title}</h2>
-                <p className="text-center text-slate-400 text-[10px] uppercase tracking-widest font-black">{t.onboarding.subtitle}</p>
+                <h2 className="text-2xl font-serif font-bold text-center mb-2 tracking-tight">{t.onboarding.title}</h2>
+                <p className="text-center text-slate-400 text-[10px] uppercase tracking-widest font-black opacity-80">{t.onboarding.subtitle}</p>
              </div>
              
              <div className="p-10 space-y-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
-                <p className="text-sm text-gray-600 leading-relaxed text-center">
+                <p className="text-sm text-gray-600 leading-relaxed text-center font-medium">
                   {language === AppLanguage.PT 
-                    ? "Para proteger a sua privacidade e os custos do programador, o DeepScribe utiliza a sua própria chave API do Google Gemini. Pode obtê-la gratuitamente em segundos."
-                    : "To protect your privacy and the developer's costs, DeepScribe uses your own Google Gemini API key. You can get one for free in seconds."}
+                    ? "Para proteger a sua privacidade e evitar custos ao programador, o DeepScribe utiliza a sua própria chave API do Google Gemini."
+                    : "To protect your privacy and prevent developer costs, DeepScribe uses your own Google Gemini API key."}
                 </p>
                 
                 <div className="space-y-4">
-                   <button onClick={handleBridgeSelect} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-5 rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-xs transition-all">
-                      <Shield className="w-5 h-5" /> {t.onboarding.cta}
-                   </button>
-                   
-                   <div className="relative py-2"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div><div className="relative flex justify-center"><span className="bg-white px-3 text-[10px] uppercase font-black text-gray-300 tracking-widest">or enter manually</span></div></div>
+                   {isBridgeAvailable ? (
+                     <>
+                        <button onClick={handleBridgeSelect} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-5 rounded-2xl shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-xs transition-all active:scale-[0.98]">
+                           <Shield className="w-5 h-5" /> {t.onboarding.cta}
+                        </button>
+                        <div className="relative py-2"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div><div className="relative flex justify-center"><span className="bg-white px-3 text-[10px] uppercase font-black text-gray-300 tracking-widest">or enter manually</span></div></div>
+                     </>
+                   ) : (
+                     <div className="bg-amber-50 border border-amber-100 p-5 rounded-3xl flex items-start gap-4 mb-2">
+                        <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                        <div>
+                           <div className="text-xs font-black text-amber-900 uppercase tracking-widest mb-1">{language === AppLanguage.PT ? "Ligação Direta Não Disponível" : "Direct Link Not Available"}</div>
+                           <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
+                              {language === AppLanguage.PT 
+                                ? "Está a aceder ao DeepScribe fora do AI Studio. Por favor, utilize o formulário abaixo para inserir a sua chave manualmente." 
+                                : "You are accessing DeepScribe outside of AI Studio. Please use the form below to enter your key manually."}
+                           </p>
+                        </div>
+                     </div>
+                   )}
                    
                    <form onSubmit={handleManualKeySubmit} className="space-y-3">
-                      <input 
-                        type="password" 
-                        value={manualKey} 
-                        onChange={(e) => setManualKey(e.target.value)} 
-                        placeholder="Paste your Gemini API Key here..." 
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                      />
-                      <button type="submit" className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition-all">Apply Key</button>
+                      <div className="relative group">
+                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors"><Lock className="w-4 h-4" /></div>
+                        <input 
+                          type="password" 
+                          value={manualKey} 
+                          onChange={(e) => setManualKey(e.target.value)} 
+                          placeholder={language === AppLanguage.PT ? "Cole aqui a sua Chave API Gemini..." : "Paste your Gemini API Key here..."}
+                          className="w-full pl-12 pr-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-mono"
+                        />
+                      </div>
+                      <button type="submit" className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-black transition-all shadow-lg active:scale-[0.98] uppercase tracking-widest text-xs">Apply Key</button>
                    </form>
                 </div>
 
-                <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100">
-                   <h4 className="text-xs font-black text-blue-800 uppercase tracking-widest mb-3 flex items-center gap-2"><Info className="w-4 h-4"/> {language === AppLanguage.PT ? "Como obter uma chave (Grátis):" : "How to get a key (Free):"}</h4>
-                   <div className="space-y-3 text-[12px] text-blue-900">
+                <div className="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
+                   <h4 className="text-[11px] font-black text-indigo-800 uppercase tracking-widest mb-3 flex items-center gap-2"><Info className="w-4 h-4"/> {language === AppLanguage.PT ? "Como obter uma chave (Grátis):" : "How to get a key (Free):"}</h4>
+                   <div className="space-y-3 text-[12px] text-indigo-900">
                       <div className="flex gap-3">
-                         <span className="font-bold">1.</span>
-                         <span>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" className="font-bold underline text-blue-700">Google AI Studio</a>.</span>
+                         <span className="flex items-center justify-center w-5 h-5 bg-indigo-200 text-indigo-800 rounded-full text-[10px] font-black shrink-0 mt-0.5">1</span>
+                         <span>Go to <a href="https://aistudio.google.com/app/apikey" target="_blank" className="font-bold underline text-indigo-700 hover:text-indigo-900 transition-colors">Google AI Studio</a>.</span>
                       </div>
                       <div className="flex gap-3">
-                         <span className="font-bold">2.</span>
+                         <span className="flex items-center justify-center w-5 h-5 bg-indigo-200 text-indigo-800 rounded-full text-[10px] font-black shrink-0 mt-0.5">2</span>
                          <span>Sign in with any Google account (it's free).</span>
                       </div>
                       <div className="flex gap-3">
-                         <span className="font-bold">3.</span>
-                         <span>Click "Create API Key" and copy the code into the box above.</span>
+                         <span className="flex items-center justify-center w-5 h-5 bg-indigo-200 text-indigo-800 rounded-full text-[10px] font-black shrink-0 mt-0.5">3</span>
+                         <span>Click "Create API Key" and copy the code.</span>
                       </div>
                    </div>
                 </div>
@@ -200,7 +227,7 @@ const App: React.FC = () => {
       {/* Sidebar - Desktop */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:static md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-8 flex items-center gap-3">
-           <BrainCircuit className="w-8 h-8 text-indigo-600" />
+           <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-100"><BrainCircuit className="w-6 h-6" /></div>
            <h1 className="text-xl font-serif font-black text-gray-900 tracking-tighter uppercase">DEEPSCRIBE</h1>
         </div>
 
@@ -217,7 +244,7 @@ const App: React.FC = () => {
 
         <div className="p-6 border-t border-gray-50 space-y-4">
            <LanguageSwitcher current={language} onSelect={(l) => handleUpdateSettings({ ...settings, appLanguage: l })} />
-           <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">v2.1.0 BYOK Edition</div>
+           <div className="text-[9px] font-black text-gray-300 uppercase tracking-widest text-center">v2.1.2 Environment Secure</div>
         </div>
       </aside>
 
@@ -227,7 +254,7 @@ const App: React.FC = () => {
         <header className="md:hidden bg-white border-b border-gray-100 p-4 flex items-center justify-between">
           <button onClick={() => setIsSidebarOpen(true)} className="p-2 hover:bg-gray-100 rounded-lg"><Menu className="w-6 h-6 text-gray-600" /></button>
           <div className="flex items-center gap-2">
-             <BrainCircuit className="w-6 h-6 text-indigo-600" />
+             <BrainCircuit className="w-5 h-5 text-indigo-600" />
              <span className="font-serif font-black text-lg">DEEPSCRIBE</span>
           </div>
           <LanguageSwitcher current={language} onSelect={(l) => handleUpdateSettings({ ...settings, appLanguage: l })} />
